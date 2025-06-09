@@ -107,7 +107,7 @@ function create_table_dialogo(con) {
 }
 
 function create_table_dialogo_mapa_fases(con) {
-  console.log("Criando tabela 'diaalogo_mapa_fases'...");
+  console.log("Criando tabela 'dialogo_mapa_fases'...");
   const sql = `
     CREATE TABLE IF NOT EXISTS dialogo_mapa_fases (
   fk_id_local INT,
@@ -542,56 +542,56 @@ function inserir_dialogo28(con) {
 
 function inserir_cena1(con) {
   console.log("Inserindo cena 1...");
-  const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
+  const sql = `INSERT INTO cenas (id_cenas, descricao, ganho, nome_cena)
                VALUES (1, NULL, NULL, 'Começo do jogo');`;
   con.query(sql, callback_erro);
 }
 
 function inserir_cena2(con) {
   console.log("Inserindo cena 2...");
-  const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
+  const sql = `INSERT INTO cenas (id_cenas, descricao, ganho, nome_cena)
                VALUES (2, NULL, NULL, 'TUTORIAL');`;
   con.query(sql, callback_erro);
 }
 
 function inserir_cena3(con) {
   console.log("Inserindo cena 3...");
-  const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
+  const sql = `INSERT INTO cenas (id_cenas, descricao, ganho, nome_cena)
                VALUES (3, 'Tutorial concluído. Ganho de: 50 cruzados novos', 50, 'FASE 1 - A JÓIA ROUBADA');`;
   con.query(sql, callback_erro);
 }
 
 function inserir_cena4(con) {
   console.log("Inserindo cena 4...");
-  const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
+  const sql = `INSERT INTO cenas (id_cenas, descricao, ganho, nome_cena)
                VALUES (4, 'Missão da joia concluída. Ganho de 75 cruzados novos', 75, 'FASE 2 - A VOLANTE');`;
   con.query(sql, callback_erro);
 }
 
 function inserir_cena5(con) {
   console.log("Inserindo cena 5...");
-  const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
+  const sql = `INSERT INTO cenas (id_cenas, descricao, ganho, nome_cena)
                VALUES (5, 'Missão da . Ganho de:  Mil cruzados novos', 1000, 'FASE 3 - CIDADE DO SERTÃO');`;
   con.query(sql, callback_erro);
 }
 
 function inserir_cena6(con) {
   console.log("Inserindo cena 6...");
-  const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
+  const sql = `INSERT INTO cenas (id_cenas, descricao, ganho, nome_cena)
                VALUES (6, 'Missão da . Ganho de:  Mil cruzados novo', 9999, 'FASE 4 - FAZENDA DO CORONEL ZÉ RUFINO');`;
   con.query(sql, callback_erro);
 }
 
 function inserir_cena7(con) {
   console.log("Inserindo cena 7...");
-  const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
+  const sql = `INSERT INTO cenas (id_cenas, descricao, ganho, nome_cena)
                VALUES (7, 'Jogo zerado. Você recebeu o título de Rei do Cangaço', 99999999, 'FIM DE JOGO');`;
   con.query(sql, callback_erro);
 }
 
 function inserir_cena8(con) {
   console.log("Inserindo cena 8...");
-  const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
+  const sql = `INSERT INTO cenas (id_cenas, descricao, ganho, nome_cena)
                VALUES (8, 'Game over. Você não conseguiu vencer o coronel Zé Rufino, perdeu tudo e virou lembrança no sertão.', 0, 'FIM DE JOGO');`;
   con.query(sql, callback_erro);
 }
@@ -777,7 +777,7 @@ function inserirDb() {
 function inserir_personagem1_atirador(con, nome) {
   console.log("Inserindo personagem 1...");
   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
-                VALUES (1, ${nome}, 120, 50, 'atirador', 5, 10, 10, 'jogador', 1, 8, 9);`;
+                VALUES (1, '${nome}', 120, 50, 'atirador', 5, 10, 10, 'jogador', 1, 8, 9);`;
   con.query(sql, callback_erro);
 }
 
@@ -791,7 +791,7 @@ function inserir_personagem1_cabraPexte(con, nome) {
 function inserir_personagem1_espiritualista(con, nome) {
   console.log("Inserindo personagem 1...");
   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
-                VALUES (1, ${nome}, 1620, 50, 'espiritualista', 7, 7, 10, 'jogador', 1, 12, 13);`;
+                VALUES (1, ${nome}, 160, 50, 'espiritualista', 7, 7, 10, 'jogador', 1, 12, 13);`;
   con.query(sql, callback_erro);
 }
 
