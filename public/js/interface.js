@@ -1,29 +1,41 @@
-// Para escrever no navegador
+// public/js/interface.js
+
+// Importações
+import { setDialogos } from "./dadosCompartilhados.js";
+import { escolherProta } from "./escolherProtagonista.js";
+import { Tutorial, Fase1, Fase2, Fase3, Fase4 } from "./fases.js";
+import {
+  lampiao,
+  francisctexeira,
+  volante,
+  bandidoscidade,
+  bandidoscidade2,
+  zerufino,
+} from "./personagem.js";
+
+// DOM helpers – escrever e mostrar opções
 function mostrarTexto(texto) {
   const caixa = document.getElementById("caixa-de-dialogo");
-  // Adiciona o novo texto e garante que a caixa de diálogo role para o final
   caixa.innerHTML += `<p>${texto}</p>`;
   caixa.scrollTop = caixa.scrollHeight;
 }
 
-// Botoes de comando
 function mostrarOpcoes(opcoes) {
   const comandos = document.getElementById("comandos");
-  comandos.innerHTML = ""; // Limpa opções anteriores
+  comandos.innerHTML = "";
 
   opcoes.forEach((opcao) => {
     const botao = document.createElement("button");
     botao.textContent = opcao.texto;
     botao.onclick = () => {
-      // Limpa as opções assim que uma é clicada para evitar múltiplos cliques
       comandos.innerHTML = "";
-      opcao.acao(); // Executa a ação da opção
+      opcao.acao();
     };
     comandos.appendChild(botao);
   });
 }
 
-// Cenario e personagens
+// Atualizações visuais
 function atualizarImagemPersonagem(estado) {
   const img = document.querySelector("#jogador img");
   switch (estado) {
@@ -54,97 +66,73 @@ function atualizarInterface({ cenario, estadoJogador }) {
   if (estadoJogador) atualizarImagemPersonagem(estadoJogador);
 }
 
-// Importações
-import { setDialogos } from "./dadosCompartilhados.js";
-import { escolherProta } from "./escolherProtagonista.js";
-import { Tutorial, Fase1, Fase2, Fase3, Fase4 } from "./fases.js";
-import {
-  lampiao,
-  francisctexeira,
-  volante,
-  bandidoscidade,
-  bandidoscidade2,
-  zerufino,
-} from "./personagem.js";
-// import { exibirMapa, Cidade, Vila, Delegacia, Venda, Igreja, Caatinga, Fazenda1, Fazenda2 } from './mapa.js' // Removido, pois não é usado aqui diretamente
-
+// Variável global para o jogador
 let jogador;
 
-// Função principal chamada após carregar diálogos
+// Função principal de início do jogo
 async function comecarJogo() {
-  // Tornada assíncrona
   const nome = document.getElementById("nomeJogador").value;
   if (!nome) {
     alert("Por favor, digite um nome para o seu personagem.");
     return;
   }
 
-  // Esconder o campo de nome e o botão de começar
   document.getElementById("comecar").style.display = "none";
-  document.getElementById("caixa-de-dialogo").style.display = "block"; // Garante que a caixa de diálogo esteja visível
-  document.getElementById("comandos").style.display = "flex"; // Garante que os comandos estejam visíveis
+  document.getElementById("caixa-de-dialogo").style.display = "block";
+  document.getElementById("comandos").style.display = "flex";
 
-  // Escolher o protagonista (aguarda a Promise)
   jogador = await escolherProta(nome);
   mostrarTexto(`Seja bem-vindo(a), **${jogador.nome}**! O sertão te espera.`);
 
-  // --- Sequência de Fases ---
-  // Cada fase agora é aguardada (await) para que o jogo prossiga interativamente
-
-  // Tutorial
-  const _tutorial = new Tutorial("Tutorial", "não concluído");
+  // TUTORIAL
+  const tutorial = new Tutorial("Tutorial", "pendente");
   atualizarInterface({ cenario: "caatinga", estadoJogador: "" });
-  mostrarTexto(_tutorial.mostrarTutorial);
-  await _tutorial.iniciarTutorial(jogador, lampiao); // Aguarda a conclusão do tutorial
+  mostrarTexto(tutorial.mostrarTutorial);
+  await tutorial.iniciarTutorial(jogador, lampiao);
 
-  // Fase 1
-  const _fase1 = new Fase1("Fase 1", "não concluída");
+  // FASE 1
+  const fase1 = new Fase1("A Joia do Coronel", "pendente");
   atualizarInterface({ cenario: "fase1", estadoJogador: "" });
-  mostrarTexto(_fase1.mostrarfase1());
-  await _fase1.missaoDaJoia(jogador, francisctexeira); // Aguarda a conclusão da Fase 1
+  mostrarTexto(fase1.mostrarfase1); // Correto: acessando como propriedade/getter
+  await fase1.missaoDaJoia(jogador, francisctexeira);
 
-  // Fase 2
-  const _fase2 = new Fase2("Fase 2", "não concluída");
+  // FASE 2
+  const fase2 = new Fase2("Resgate na Vila", "pendente");
   atualizarInterface({ cenario: "fase2", estadoJogador: "" });
-  mostrarTexto(_fase2.mostrarfase2());
-  await _fase2.missaoResgate(jogador, volante); // Aguarda a conclusão da Fase 2
-  _fase2.missaoResgateConcluida(jogador); // Chama o método de conclusão após a missão
+  mostrarTexto(fase2.mostrarfase2);
+  await fase2.missaoResgate(jogador, volante);
+  fase2.missaoResgateConcluida(jogador);
 
-  // Fase 3
-  const _fase3 = new Fase3("Fase 3", "não concluída");
+  // FASE 3
+  const fase3 = new Fase3("Confronto na Cidade", "pendente");
   atualizarInterface({ cenario: "fase3", estadoJogador: "" });
-  mostrarTexto(_fase3.mostrarfase3());
-  await _fase3.irParaCidade(jogador, bandidoscidade, bandidoscidade2); // Aguarda a conclusão da Fase 3
+  mostrarTexto(fase3.mostrarfase3);
+  await fase3.irParaCidade(jogador, bandidoscidade, bandidoscidade2);
 
-  // Fase 4
-  const _fase4 = new Fase4("Fase 4", "não concluída");
+  // FASE 4
+  const fase4 = new Fase4("Fazenda do Coronel", "pendente");
   atualizarInterface({ cenario: "fase4", estadoJogador: "" });
-  mostrarTexto(_fase4.mostrarfase4());
-  await _fase4.irParaFazendaCoronel(jogador, zerufino); // Aguarda a conclusão da Fase 4
-  // A função fimDeJogo é chamada dentro de irParaFazendaCoronel, que também é aguardada.
+  mostrarTexto(fase4.mostrarfase4);
+  await fase4.irParaFazendaCoronel(jogador, zerufino);
 
-  // Fim do jogo (opcional, pode ser movido para dentro de Fase4.fimDeJogo)
-  // mostrarTexto("Jogo encerrado. Agradecemos por jogar!")
-  // mostrarOpcoes([{ texto: "Jogar Novamente", acao: () => location.reload() }])
+  // Final opcional
+  // mostrarTexto("Jogo encerrado. Agradecemos por jogar!");
+  // mostrarOpcoes([{ texto: "Jogar Novamente", acao: () => location.reload() }]);
 }
 
-// Exponha a função globalmente para que possa ser chamada pelo HTML
+// Expondo para o HTML
 window.comecarJogo = comecarJogo;
 
-// // Carregar os diálogos do backend antes de iniciar o jogo
-// // Isso é feito uma única vez no carregamento da página
+// (opcional) Carregamento dos diálogos via backend - pode ser ativado se necessário
 // fetch("/api/dialogos")
 //   .then((res) => res.json())
 //   .then((data) => {
 //     setDialogos(data);
 //     console.log("Diálogos carregados com sucesso!");
-//     // O jogo só começa de fato quando o jogador clica em "Começar"
 //   })
 //   .catch((err) => {
 //     console.error("Erro ao carregar os diálogos:", err);
-//     mostrarTexto(
-//       "Erro ao carregar diálogos do servidor. O jogo pode não funcionar corretamente."
-//     );
+//     mostrarTexto("Erro ao carregar diálogos do servidor. O jogo pode não funcionar corretamente.");
 //   });
 
 export {
