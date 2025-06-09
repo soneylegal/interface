@@ -1,40 +1,38 @@
 "use strict";
 
-
-const mysql = require('mysql2');
+const mysql = require("mysql2");
 // const { data_para_str, imprime_contato } = require('./util');
-
 
 function open_connection_and_create_db(callback) {
   console.log("Conectando...");
 
   const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '12345678',
-    database: 'test'
+    host: "localhost",
+    user: "root",
+    password: "12345678",
+    database: "test",
   });
 
-  connection.connect(function(err) {
+  connection.connect(function (err) {
     if (err) {
-      console.error('Erro na conexão: ' + err.stack);
+      console.error("Erro na conexão: " + err.stack);
       return;
     }
-    console.log('Conectado ao MySQL. ID: ' + connection.threadId);
+    console.log("Conectado ao MySQL. ID: " + connection.threadId);
 
     const sql_create_db = `CREATE DATABASE IF NOT EXISTS test`;
 
-    connection.query(sql_create_db, function(err) {
+    connection.query(sql_create_db, function (err) {
       if (err) {
-        console.error('Erro ao criar banco: ' + err);
+        console.error("Erro ao criar banco: " + err);
         return;
       }
 
       console.log("Banco de dados 'test' criado/verificado.");
 
-      connection.changeUser({ database: 'test' }, function(err) {
+      connection.changeUser({ database: "test" }, function (err) {
         if (err) {
-          console.error('Erro ao mudar para o banco: ' + err);
+          console.error("Erro ao mudar para o banco: " + err);
           return;
         }
 
@@ -47,7 +45,7 @@ function open_connection_and_create_db(callback) {
 
 function callback_erro(err, results, fields) {
   if (err) {
-    console.error('Erro: ' + err);
+    console.error("Erro: " + err);
     return;
   }
 }
@@ -78,8 +76,8 @@ function create_table_cenas(con) {
   con.query(sql, callback_erro);
 }
 
-function create_table_mapa_fases(con){
-  console.log("criando tabela mapa_fases...")
+function create_table_mapa_fases(con) {
+  console.log("criando tabela mapa_fases...");
   const sql = `
   CREATE TABLE IF NOT EXISTS mapa_fases(
   id_local INT NOT NULL PRIMARY KEY, 
@@ -89,10 +87,10 @@ function create_table_mapa_fases(con){
   descricao VARCHAR(255),
   FOREIGN KEY (fk_id_cenas) REFERENCES cenas(id_cenas)
   );
-  `
-  con.query(sql, callback_erro)
-   
-  console.log('fim...')
+  `;
+  con.query(sql, callback_erro);
+
+  console.log("fim...");
 }
 
 function create_table_dialogo(con) {
@@ -157,46 +155,42 @@ function create_table_personagem(con) {
   con.query(sql, callback_erro);
 }
 
-
 function inserir_itens1(con) {
-   console.log("Inserindo itens 1...");
-   const sql = `INSERT INTO itens (id_item, item)
+  console.log("Inserindo itens 1...");
+  const sql = `INSERT INTO itens (id_item, item)
              VALUES (1, 'cantil');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
-
-
- function inserir_hab1(con) {
-   console.log("Inserindo hab 1...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab1(con) {
+  console.log("Inserindo hab 1...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (1, 7, 2, 'pistola');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab2(con) {
-   console.log("Inserindo hab 2...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab2(con) {
+  console.log("Inserindo hab 2...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (2, 12, 5, 'tiro duplo de escopeta');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
-  function inserir_personagem2(con) {
-   console.log("Inserindo personagem 2...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem2(con) {
+  console.log("Inserindo personagem 2...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (2, 'Lampião', 80, 500, 'Líder do cangaço', 2, 4, 100, 'NPC', NULL , 1, 2);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- 
 function inserir_personagem3(con) {
-   console.log("Inserindo personagem 3...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+  console.log("Inserindo personagem 3...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (3, 'Maria Rendeira', NULL, NULL, 'dona de casa', NULL, NULL, NULL, 'NPC', NULL,NULL,NULL);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_dialogo1(con) {
+function inserir_dialogo1(con) {
   console.log("Inserindo dialogo 1...");
   const sql = `INSERT INTO dialogo (id_dialogo, fk_id_personagem, fala)
                VALUES (1, 2, 'Acorda, cabra! Precisa saber lutar à risca faca se quiser se juntar ao bando.');`;
@@ -246,13 +240,13 @@ function inserir_dialogo7(con) {
 }
 
 function inserir_personagem0(con) {
-   console.log("Inserindo personagem 0...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+  console.log("Inserindo personagem 0...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (0, 'NARRADOR', NULL, NULL, 'NARRADOR', NULL, NULL, NULL, 'NPC', NULL,NULL,NULL);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_dialogo8(con) {
+function inserir_dialogo8(con) {
   console.log("Inserindo dialogo 8...");
   const sql = `INSERT INTO dialogo (id_dialogo, fk_id_personagem, fala)
                VALUES 8, 0, 'Você chega na região da fazenda do finado coronel Francisco de Texeira, onde a tal da jóia se encontra. Está de noite, e só se ouve as cigarras e seus próprios passos. De repente, um sombra sinistra aparece em sua frente! E ela não parece amigável…');`;
@@ -274,148 +268,146 @@ function inserir_dialogo9(con) {
 }
 
 function inserir_hab3(con) {
-   console.log("Inserindo hab 3...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+  console.log("Inserindo hab 3...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (3, 10, 7, 'FACA');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab4(con) {
-   console.log("Inserindo hab 4...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab4(con) {
+  console.log("Inserindo hab 4...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (4, 10, 8, 'CHUTE');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab5(con) {
-   console.log("Inserindo hab 5...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab5(con) {
+  console.log("Inserindo hab 5...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (5, 10, 5, 'DISPARO');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
 function inserir_hab6(con) {
-   console.log("Inserindo hab 6...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+  console.log("Inserindo hab 6...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (6, 15, 7, 'ESCOPETA');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab7(con) {
-   console.log("Inserindo hab 7...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab7(con) {
+  console.log("Inserindo hab 7...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (7, 14, 8, 'FACAO');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab8(con) {
-   console.log("Inserindo hab 8...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab8(con) {
+  console.log("Inserindo hab 8...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (8, 20, 2, 'PISTOLA 20M');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab9(con) {
-   console.log("Inserindo hab 9...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab9(con) {
+  console.log("Inserindo hab 9...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (9, 30, 2, 'ESPINGARDA');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab10(con) {
-   console.log("Inserindo hab 10...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab10(con) {
+  console.log("Inserindo hab 10...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (10, 25, 2, 'SOCO');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab11(con) {
-   console.log("Inserindo hab 11...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab11(con) {
+  console.log("Inserindo hab 11...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (11, 30, 4, 'PEIXERA');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab12(con) {
-   console.log("Inserindo hab 12...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab12(con) {
+  console.log("Inserindo hab 12...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (12, 60, 7, 'me de padin ciço');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_hab13(con) {
-   console.log("Inserindo hab 13...");
-   const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
+function inserir_hab13(con) {
+  console.log("Inserindo hab 13...");
+  const sql = `INSERT INTO habilidade (id_habilidade, dano, falha, nome_hab)
              VALUES (13, 40, 4, 'PENITENCIA');`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
-
- function inserir_personagem4(con) {
-   console.log("Inserindo personagem 4...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem4(con) {
+  console.log("Inserindo personagem 4...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (4, 'Coronel Francisco de Texeira', 60,  50, 'Coronel da fazenda de gados', 4,  10, 10, 'NPC', NULL, 3, 4);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_personagem5(con) {
-   console.log("Inserindo personagem 5...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem5(con) {
+  console.log("Inserindo personagem 5...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (5, 'Volante', 50, 50, 'Policiais do sertão', 4,  7, 1, 'NPC', NULL, 3, 1);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_personagem6(con) {
-   console.log("Inserindo personagem 6...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem6(con) {
+  console.log("Inserindo personagem 6...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (6, 'Bandidos da Cidade', 30, 50, 'Invasores', 2,  10, 1, 'NPC', NULL, 5, 4);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_personagem7(con) {
-   console.log("Inserindo personagem 7...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem7(con) {
+  console.log("Inserindo personagem 7...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (7, 'Bandidos da Cidade', 30, 50, 'Invasores', 2,  10, 1, 'NPC', NULL, 5, 4);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_personagem8(con) {
-   console.log("Inserindo personagem 8...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem8(con) {
+  console.log("Inserindo personagem 8...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (8, 'Coronel Zé Rufine', 100, 5000, 'Coronel militarizado', 2,  10, 1, 'NPC', NULL, 6, 7);`;
-   con.query(sql, callback_erro);
- }
-
+  con.query(sql, callback_erro);
+}
 
 function inserir_personagem9(con) {
-   console.log("Inserindo personagem 9...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+  console.log("Inserindo personagem 9...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (9, 'chefeBando', NULL, NULL, 'chefeBando', NULL, NULL, NULL, 'NPC', NULL,NULL,NULL);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_personagem10(con) {
-   console.log("Inserindo personagem 10...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem10(con) {
+  console.log("Inserindo personagem 10...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (10, 'donaVenda', NULL, NULL, 'donaVenda', NULL, NULL, NULL, 'NPC', NULL,NULL,NULL);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_personagem11(con) {
-   console.log("Inserindo personagem 11...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem11(con) {
+  console.log("Inserindo personagem 11...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (11, 'padre', NULL, NULL, 'padre', NULL, NULL, NULL, 'NPC', NULL,NULL,NULL);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_personagem12(con) {
-   console.log("Inserindo personagem 12...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem12(con) {
+  console.log("Inserindo personagem 12...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (12, 'criança', NULL, NULL, 'criança', NULL, NULL, NULL, 'NPC', NULL,NULL,NULL);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_dialogo10(con) {
+function inserir_dialogo10(con) {
   console.log("Inserindo dialogo 10...");
   const sql = `INSERT INTO dialogo (id_dialogo, fk_id_personagem, fala)
                VALUES (10, 9, 'Ave, o caceteiro daquele volante maldito levou Batoré com ele! tu vai atrais dele. Tás em Caju Bunito, na delegacia. Seje rápido antes que o sol esfrie.');`;
@@ -449,7 +441,6 @@ function inserir_dialogo14(con) {
                VALUES (14, 0, 'Você vai em direção à cidade, e se depara em três caminhos diferentes pra ir. Qual você vai?');`;
   con.query(sql, callback_erro);
 }
-
 
 function inserir_dialogo15(con) {
   console.log("Inserindo dialogo 15 ...");
@@ -594,7 +585,7 @@ function inserir_cena6(con) {
 function inserir_cena7(con) {
   console.log("Inserindo cena 7...");
   const sql = `INSERT INTO cenas (id_cenas, descriacao, ganho, nome_cena)
-               VALUES (7, 'Jogo zerado. Você recebeu o título de 'Rei do Cangaço', 99999999, 'FIM DE JOGO');`;
+               VALUES (7, 'Jogo zerado. Você recebeu o título de Rei do Cangaço', 99999999, 'FIM DE JOGO');`;
   con.query(sql, callback_erro);
 }
 
@@ -647,7 +638,6 @@ function inserir_mapa6(con) {
   con.query(sql, callback_erro);
 }
 
-
 function inserir_mapa7(con) {
   console.log("Inserindo mapa 7...");
   const sql = `INSERT INTO mapa_fases (id_local, nome_mapa, status, fk_id_cenas, descricao )
@@ -662,30 +652,24 @@ function inserir_mapa8(con) {
   con.query(sql, callback_erro);
 }
 
-
-
-
-
-
-
- function consulta_habilidade(con) {
+function consulta_habilidade(con) {
   console.log("Consultando habilidades...");
   const sql = `SELECT * FROM habilidade WHERE id_habilidade = 1;`;
 
-  con.query(sql, function(err, results, fields) {
+  con.query(sql, function (err, results, fields) {
     if (err) {
-      console.error('Erro: ' + err.stack);
+      console.error("Erro: " + err.stack);
       return;
     }
 
     console.log("Consulta realizada com sucesso:");
     if (results && results.length > 0) {
-      results.forEach(hab => {
+      results.forEach((hab) => {
         console.log(`ID: ${hab.id_habilidade}`);
         console.log(`Nome: ${hab.nome_hab}`);
         console.log(`Dano: ${hab.dano}`);
         console.log(`Falha: ${hab.falha}`);
-        console.log('------------------------------');
+        console.log("------------------------------");
       });
     } else {
       console.log("Nenhuma habilidade encontrada.");
@@ -693,19 +677,9 @@ function inserir_mapa8(con) {
   });
 }
 
-
-
-
-
-
-
-
-
-
-
 function close(con) {
   console.log("Fechando conexão...");
-  con.end(function(err) {
+  con.end(function (err) {
     if (err) {
       console.error("Erro ao fechar conexão:", err.message);
     } else {
@@ -714,117 +688,120 @@ function close(con) {
   });
 }
 
+function inserirDb() {
+  console.log("==== INÍCIO ====");
 
+  open_connection_and_create_db(function (conexao) {
+    create_table_habilidades(conexao);
+    create_table_cenas(conexao);
+    create_table_mapa_fases(conexao);
+    create_table_itens(conexao);
+    create_table_personagem(conexao);
+    create_table_dialogo(conexao);
+    create_table_dialogo_mapa_fases(conexao);
+    inserir_itens1(conexao);
+    inserir_hab1(conexao);
+    inserir_hab2(conexao);
+    inserir_hab3(conexao);
+    inserir_hab4(conexao);
+    inserir_hab5(conexao);
+    inserir_hab6(conexao);
+    inserir_hab7(conexao);
+    inserir_hab8(conexao);
+    inserir_hab9(conexao);
+    inserir_hab10(conexao);
+    inserir_hab11(conexao);
+    inserir_hab12(conexao);
+    inserir_hab13(conexao);
+    inserir_personagem0(conexao);
+    inserir_personagem2(conexao);
+    inserir_personagem3(conexao);
+    inserir_personagem4(conexao);
+    inserir_personagem5(conexao);
+    inserir_personagem6(conexao);
+    inserir_personagem7(conexao);
+    inserir_personagem8(conexao);
+    inserir_personagem9(conexao);
+    inserir_personagem10(conexao);
+    inserir_personagem11(conexao);
+    inserir_personagem12(conexao);
+    inserir_dialogo1(conexao);
+    inserir_dialogo2(conexao);
+    inserir_dialogo3(conexao);
+    inserir_dialogo4(conexao);
+    inserir_dialogo5(conexao);
+    inserir_dialogo6(conexao);
+    inserir_dialogo7(conexao);
+    inserir_dialogo8(conexao);
+    inserir_dialogo9(conexao);
+    inserir_dialogo10(conexao);
+    inserir_dialogo11(conexao);
+    inserir_dialogo12(conexao);
+    inserir_dialogo13(conexao);
+    inserir_dialogo14(conexao);
+    inserir_dialogo15(conexao);
+    inserir_dialogo16(conexao);
+    inserir_dialogo17(conexao);
+    inserir_dialogo18(conexao);
+    inserir_dialogo19(conexao);
+    inserir_dialogo20(conexao);
+    inserir_dialogo21(conexao);
+    inserir_dialogo22(conexao);
+    inserir_dialogo23(conexao);
+    inserir_dialogo24(conexao);
+    inserir_dialogo25(conexao);
+    inserir_dialogo26(conexao);
+    inserir_dialogo27(conexao);
+    inserir_dialogo28(conexao);
+    //consulta_habilidade(conexao)
+    inserir_cena1(conexao);
+    inserir_cena2(conexao);
+    inserir_cena3(conexao);
+    inserir_cena4(conexao);
+    inserir_cena5(conexao);
+    inserir_cena6(conexao);
+    inserir_cena7(conexao);
+    inserir_cena8(conexao);
+    inserir_mapa1(conexao);
+    inserir_mapa2(conexao);
+    inserir_mapa3(conexao);
+    inserir_mapa4(conexao);
+    inserir_mapa5(conexao);
+    inserir_mapa6(conexao);
+    close(conexao);
+  });
 
-function inserirDb(){
-console.log("==== INÍCIO ====");
-
-open_connection_and_create_db(function(conexao) {
-   create_table_habilidades(conexao);
-  create_table_cenas(conexao);
-  create_table_mapa_fases(conexao);
-  create_table_itens(conexao)
-  create_table_personagem(conexao)
-  create_table_dialogo(conexao);
-  create_table_dialogo_mapa_fases(conexao);
-  inserir_itens1(conexao)
-  inserir_hab1(conexao)
-  inserir_hab2(conexao)
-  inserir_hab3(conexao)
-  inserir_hab4(conexao)
-  inserir_hab5(conexao)
-  inserir_hab6(conexao)
-  inserir_hab7(conexao)
-  inserir_hab8(conexao)
-  inserir_hab9(conexao)
-  inserir_hab10(conexao)
-  inserir_hab11(conexao)
-  inserir_hab12(conexao)
-  inserir_hab13(conexao)
-  inserir_personagem0(conexao)
-  inserir_personagem2(conexao)
-  inserir_personagem3(conexao)
-  inserir_personagem4(conexao)
-  inserir_personagem5(conexao)
-  inserir_personagem6(conexao)
-  inserir_personagem7(conexao)
-  inserir_personagem8(conexao)
-  inserir_personagem9(conexao)
-  inserir_personagem10(conexao)
-  inserir_personagem11(conexao)
-  inserir_personagem12(conexao)
-  inserir_dialogo1(conexao)
-  inserir_dialogo2(conexao)
-  inserir_dialogo3(conexao)
-  inserir_dialogo4(conexao)
-  inserir_dialogo5(conexao)
-  inserir_dialogo6(conexao)
-  inserir_dialogo7(conexao)
-  inserir_dialogo8(conexao)
-  inserir_dialogo9(conexao)
-  inserir_dialogo10(conexao)
-  inserir_dialogo11(conexao)
-  inserir_dialogo12(conexao)
-  inserir_dialogo13(conexao)
-  inserir_dialogo14(conexao)
-  inserir_dialogo15(conexao)
-  inserir_dialogo16(conexao)
-  inserir_dialogo17(conexao)
-  inserir_dialogo18(conexao)
-  inserir_dialogo19(conexao)
-  inserir_dialogo20(conexao)
-  inserir_dialogo21(conexao)
-  inserir_dialogo22(conexao)
-  inserir_dialogo23(conexao)
-  inserir_dialogo24(conexao)
-  inserir_dialogo25(conexao)
-  inserir_dialogo26(conexao)
-  inserir_dialogo27(conexao)
-  inserir_dialogo28(conexao)
-  //consulta_habilidade(conexao)
-  inserir_cena1(conexao)
-  inserir_cena2(conexao)
-  inserir_cena3(conexao)
-  inserir_cena4(conexao)
-  inserir_cena5(conexao)
-  inserir_cena6(conexao)
-  inserir_cena7(conexao)
-  inserir_cena8(conexao)
-  inserir_mapa1(conexao)
-  inserir_mapa2(conexao)
-  inserir_mapa3(conexao)
-  inserir_mapa4(conexao)
-  inserir_mapa5(conexao)
-  inserir_mapa6(conexao)
-  close(conexao);
-});
-
-
-console.log("==== FIM ====");
+  console.log("==== FIM ====");
 }
 
 function inserir_personagem1_atirador(con, nome) {
-   console.log("Inserindo personagem 1...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+  console.log("Inserindo personagem 1...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (1, ${nome}, 120, 50, 'atirador', 5, 10, 10, 'jogador', 1, 8, 9);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- function inserir_personagem1_cabraPexte(con, nome) {
-   console.log("Inserindo personagem 1...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem1_cabraPexte(con, nome) {
+  console.log("Inserindo personagem 1...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (1, ${nome}, 160, 50, 'cabra da pexte"', 10, 4, 10, 'jogador', 1, 10, 11);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
-
- function inserir_personagem1_espiritualista(con, nome) {
-   console.log("Inserindo personagem 1...");
-   const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
+function inserir_personagem1_espiritualista(con, nome) {
+  console.log("Inserindo personagem 1...");
+  const sql = `INSERT INTO personagem (id_personagem, nome, vida, dinheiro, ocupacao, armadura, velocidade, reputacao, personagem_tipo, fk_id_item, fk_id_habilidade1, fk_id_habilidade2 )
                 VALUES (1, ${nome}, 1620, 50, 'espiritualista', 7, 7, 10, 'jogador', 1, 12, 13);`;
-   con.query(sql, callback_erro);
- }
+  con.query(sql, callback_erro);
+}
 
- module.exports = { inserirDb, inserir_personagem1_atirador, inserir_personagem1_cabraPexte, inserir_personagem1_espiritualista, callback_erro, close };
+module.exports = {
+  inserirDb,
+  inserir_personagem1_atirador,
+  inserir_personagem1_cabraPexte,
+  inserir_personagem1_espiritualista,
+  callback_erro,
+  close,
+};
 
- 
+inserirDb();

@@ -1,45 +1,64 @@
-
 class Habilidades {
-    #nome;
-    #dano;
-    #falha;
-    constructor(nome, dano, falha){
-    this.#nome = nome,
-    this.#dano = dano,
-    this.#falha = falha
-    }
-    get nome(){
-    return this.#nome
-    }
-    get dano(){
-    return this.#dano
-    }
-    get falha(){
-    return this.#falha
-    }
+  #nome;
+  #dano;
+  #falha; // Chance de falha do ataque (0-20, comparado com gerarNumeroAleatorio0_20)
+
+  constructor(nome, dano, falha) {
+    this.#nome = nome;
+    this.#dano = dano;
+    this.#falha = falha;
+  }
+
+  get nome() {
+    return this.#nome;
+  }
+  get dano() {
+    return this.#dano;
+  }
+  get falha() {
+    return this.#falha;
+  }
+  set dano(novoDano) {
+    this.#dano = Math.max(0, novoDano); // Garante que o dano não seja negativo
+  }
+  set falha(novaFalha) {
+    this.#falha = Math.max(0, Math.min(20, novaFalha)); // Garante que a falha esteja entre 0 e 20
+  }
 }
 
-class CaixaItens{
-    #itens
-    constructor(){
-        this.#itens = []
-    }
+class CaixaItens {
+  #itens; // Array para armazenar os itens
 
-    receberItem(n){
-        return this.#itens[n]
-    }
+  constructor() {
+    this.#itens = [];
+  }
 
-    mudarItem(n, valor){
-        this.#itens[n] = valor
+  // Retorna o item em uma posição específica
+  receberItem(n) {
+    if (n >= 0 && n < this.#itens.length) {
+      return this.#itens[n];
     }
+    return null; // Retorna null se a posição for inválida
+  }
 
-    adicionarItem(valor) {
-        this.#itens.push(valor)
+  // Altera o item em uma posição específica
+  mudarItem(n, valor) {
+    if (n >= 0 && n < this.#itens.length) {
+      this.#itens[n] = valor;
+      return true;
     }
-    listarItens() {
-        return this.#itens
-    }
+    return false; // Retorna false se a posição for inválida
+  }
+
+  // Adiciona um novo item ao final do array
+  adicionarItem(valor) {
+    this.#itens.push(valor);
+  }
+
+  // Retorna uma cópia do array de itens
+  listarItens() {
+    return [...this.#itens]; // Retorna uma cópia para evitar modificações diretas
+  }
 }
 
-export {Habilidades , CaixaItens}
-
+export { Habilidades, CaixaItens };

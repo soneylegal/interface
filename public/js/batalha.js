@@ -1,83 +1,198 @@
-import {Personagem, gerarNumeroAleatorio0_20 } from './personagem.js'
-import {Habilidades, CaixaItens } from './arsenal.js'
-import { Protagonista } from './protagonista.js'
-import { escolherProta } from './escolherProtagonista.js'
-import { mostrarTexto, mostrarOpcoes } from './interface.js'
+import { Personagem, gerarNumeroAleatorio0_20 } from "./personagem.js";
+// import {Habilidades, CaixaItens } from './arsenal.js' // Não são usadas diretamente aqui
+// import { Protagonista } from './protagonista.js' // Não é usada diretamente aqui
+// import { escolherProta } from './escolherProtagonista.js' // Não é usada diretamente aqui
+import { mostrarTexto, mostrarOpcoes } from "./interface.js";
 
+let personagemAAtual; // O protagonista em batalha
+let personagemBAtual; // O inimigo em batalha
+let resolveBatalhaPromise; // Função para resolver a Promise da batalha
+
+/**
+ * Inicia uma batalha interativa entre dois personagens.
+ * A batalha é assíncrona e retorna uma Promise que se resolve com true (vitória) ou false (derrota).
+ * @param {Personagem} personagemA - O protagonista.
+ * @param {Personagem} personagemB - O inimigo.
+ * @returns {Promise<boolean>} Uma Promise que resolve com true se o protagonista vencer, false caso contrário.
+ */
 function batalha(personagemA, personagemB) {
-    mostrarTexto(`A batalha começou entre ${personagemA.nome} e ${personagemB.nome}!
-`)
+  return new Promise((resolve) => {
+    personagemAAtual = personagemA;
+    personagemBAtual = personagemB;
+    resolveBatalhaPromise = resolve; // Armazena a função resolve
 
-let vidaInicial = personagemA.vida 
-
-let vitoria
-
-    let turno = 1
-    while (personagemA.vida > 0 && personagemB.vida > 0) {
-        mostrarTexto(`--- Turno ${turno} ---`)
-
-        let escolherHabilidade = Number(prompt("Escolha a habilidade que você quer usar (1 ou 2 0 para mostrar status): "))
-        let danoA = escolherHabilidadeFunc(personagemA, escolherHabilidade)
-        let danoRecebidoB = Math.max(0, danoA - personagemB.armadura)
-        personagemB.levarDano(danoRecebidoB)
-        
-        mostrarTexto(`${personagemA.nome} atacou com ${escolherHabilidade === 1 ? personagemA.habilidade1.nome : personagemA.habilidade2.nome}, causando ${danoRecebidoB} de dano!`)
-        mostrarTexto(`${personagemB.nome} agora tem ${personagemB.vida} de vida.\n`)
-        
-        if (personagemB.vida <= 0) {
-            mostrarTexto(`${personagemB.nome} foi derrotado! ${personagemA.nome} venceu!`)
-            personagemA.receberDinhero(personagemB.dinheiro)
-            return vitoria = true
-        }
-        
-        // Personagem B ataca
-        let habilidadeEscolhidaB = Math.random() < 0.5 ? personagemB.habilidade1 : personagemB.habilidade2
-        let danoB = 0
-        
-        if (habilidadeEscolhidaB.falha >= gerarNumeroAleatorio0_20()) {
-            mostrarTexto(`O ataque de ${personagemB.nome} falhou!`)
-        } else {
-            danoB = habilidadeEscolhidaB.dano
-        }
-        
-        let danoRecebidoA = Math.max(0, danoB - personagemA.armadura)
-        personagemA.levarDano(danoRecebidoA)
-        
-        mostrarTexto(`${personagemB.nome} atacou com ${habilidadeEscolhidaB.nome}, causando ${danoRecebidoA} de dano!`)
-        mostrarTexto(`${personagemA.nome} agora tem ${personagemA.vida} de vida.\n`)
-        
-        if (personagemA.vida <= 0) {
-            mostrarTexto(`${personagemA.nome} foi derrotado! ${personagemB.nome} venceu!`)
-            return vitoria = false
-        }
-
-        turno++
-    }
-    personagemA.vida += (vidaInicial-personagemA.vida) / 2
+    mostrarTexto(
+      `------ Batalha iniciada entre **${personagemAAtual.nome}** e **${personagemBAtual.nome}**! ------`
+    );
+    iniciarTurnoBatalha(1); // Inicia o primeiro turno
+  });
 }
 
+/**
+ * Gerencia o fluxo de um turno de batalha, verificando condições de vitória/derrota
+ * e apresentando opções de ação ao jogador.
+ * @param {number} turno - O número do turno atual.
+ */
+function iniciarTurnoBatalha(turno) {
+  // Verifica se a batalha já terminou
+  if (personagemAAtual.vida <= 0) {
+    mostrarTexto(
+      `**${personagemAAtual.nome}** foi derrotado! **${personagemBAtual.nome}** venceu!`
+    );
+    mostrarOpcoes([]); // Limpa as opções
+    resolveBatalhaPromise(false); // Resolve a Promise como derrota
+    return;
+  }
+  if (personagemBAtual.vida <= 0) {
+    mostrarTexto(
+      `**${personagemBAtual.nome}** foi derrotado! **${personagemAAtual.nome}** venceu!`
+    );
+    personagemAAtual.receberDinheiro(personagemBAtual.dinheiro); // Protagonista ganha dinheiro
+    mostrarTexto(
+      `Você ganhou **${personagemBAtual.dinheiro.toFixed(0)}** de dinheiro.`
+    );
+    mostrarOpcoes([]); // Limpa as opções
+    resolveBatalhaPromise(true); // Resolve a Promise como vitória
+    return;
+  }
 
-function escolherHabilidadeFunc(personagem, escolherHabilidade) {
-    if (escolherHabilidade === 1) {
-        return personagem.habilidade1.falha >= gerarNumeroAleatorio0_20() ? 0 : personagem.habilidade1.dano
-    } else if (escolherHabilidade === 2) {
-        return personagem.habilidade2.falha >= gerarNumeroAleatorio0_20() ? 0 : personagem.habilidade2.dano
-    } else if (escolherHabilidade === 0) {
-        mostrarStatus(personagem)
-        return escolherHabilidadeFunc(personagem, Number(prompt('Escolha a habilidade que voce quer usar (1 ou 2 0 para mostrar status): ')))
+  mostrarTexto(`--- **Turno ${turno}** ---`);
+  mostrarTexto(
+    `**${personagemAAtual.nome}** (Vida: ${personagemAAtual.vida.toFixed(
+      0
+    )}) vs **${personagemBAtual.nome}** (Vida: ${personagemBAtual.vida.toFixed(
+      0
+    )})`
+  );
+
+  mostrarOpcoes([
+    {
+      texto: `Usar Habilidade 1: ${
+        personagemAAtual.habilidade1.nome
+      } (Dano: ${personagemAAtual.habilidade1.dano.toFixed(0)})`,
+      acao: () =>
+        realizarAtaque(
+          personagemAAtual,
+          personagemBAtual,
+          personagemAAtual.habilidade1,
+          turno
+        ),
+    },
+    {
+      texto: `Usar Habilidade 2: ${
+        personagemAAtual.habilidade2.nome
+      } (Dano: ${personagemAAtual.habilidade2.dano.toFixed(0)})`,
+      acao: () =>
+        realizarAtaque(
+          personagemAAtual,
+          personagemBAtual,
+          personagemAAtual.habilidade2,
+          turno
+        ),
+    },
+    {
+      texto: "Ver Status",
+      acao: () => {
+        mostrarStatus(personagemAAtual);
+        iniciarTurnoBatalha(turno); // Permite ao jogador ver o status e escolher novamente
+      },
+    },
+  ]);
+}
+
+/**
+ * Realiza um ataque de um personagem em outro.
+ * @param {Personagem} atacante - O personagem que está atacando.
+ * @param {Personagem} defensor - O personagem que está defendendo.
+ * @param {Habilidades} habilidadeUsada - A habilidade utilizada no ataque.
+ * @param {number} turno - O número do turno atual.
+ */
+function realizarAtaque(atacante, defensor, habilidadeUsada, turno) {
+  let danoCausado = 0;
+  // Lógica da falha: se o número aleatório for menor que a falha, o ataque falha.
+  // Ou seja, um valor de falha mais alto significa mais chance de falha.
+  if (gerarNumeroAleatorio0_20() > habilidadeUsada.falha) {
+    // Lógica ajustada: se o número aleatório for MAIOR que a falha, o ataque acerta
+    danoCausado = habilidadeUsada.dano;
+  } else {
+    mostrarTexto(
+      `**${atacante.nome}** tentou usar **${habilidadeUsada.nome}**, mas o ataque falhou!`
+    );
+  }
+
+  let danoRecebidoPeloDefensor = Math.max(0, danoCausado - defensor.armadura);
+  defensor.levarDano(danoRecebidoPeloDefensor);
+
+  if (danoCausado > 0) {
+    mostrarTexto(
+      `**${atacante.nome}** atacou com **${
+        habilidadeUsada.nome
+      }**, causando **${danoRecebidoPeloDefensor.toFixed(0)}** de dano em **${
+        defensor.nome
+      }**!`
+    );
+  }
+
+  // Pequeno delay para a mensagem do jogador aparecer antes do contra-ataque do inimigo
+  setTimeout(() => {
+    // Verifica se o defensor foi derrotado antes do contra-ataque
+    if (defensor.vida <= 0) {
+      iniciarTurnoBatalha(turno); // Vai para o próximo turno para verificar a vitória
+      return;
+    }
+
+    // Ataque do inimigo
+    let habilidadeInimiga =
+      Math.random() < 0.5 ? defensor.habilidade1 : defensor.habilidade2;
+    let danoInimigo = 0;
+
+    if (gerarNumeroAleatorio0_20() > habilidadeInimiga.falha) {
+      // Lógica de falha para o inimigo
+      danoInimigo = habilidadeInimiga.dano;
     } else {
-        mostrarTexto("Número incorreto, tente novamente.")
-        return escolherHabilidadeFunc(personagem, Number(prompt("Escolha a habilidade que voce quer usar (1 ou 2 0 para mostrar status): ")))
+      mostrarTexto(
+        `O ataque de **${defensor.nome}** com **${habilidadeInimiga.nome}** falhou!`
+      );
     }
 
+    let danoRecebidoPeloAtacante = Math.max(0, danoInimigo - atacante.armadura);
+    atacante.levarDano(danoRecebidoPeloAtacante);
+
+    if (danoInimigo > 0) {
+      mostrarTexto(
+        `**${defensor.nome}** contra-atacou com **${
+          habilidadeInimiga.nome
+        }**, causando **${danoRecebidoPeloAtacante.toFixed(0)}** de dano em **${
+          atacante.nome
+        }**!`
+      );
+    }
+
+    iniciarTurnoBatalha(turno + 1); // Próximo turno
+  }, 1500); // Espera 1.5 segundos para o ataque do inimigo
 }
 
-function mostrarStatus (personagem) {
-        return mostrarTexto(`Sua vida: ${personagem.vida}\n 
-            Sua armadura: ${personagem.armadura}\n 
-            Seu dinheiro: ${personagem.dinheiro}\n 
-            Dano de ${personagem.habilidade1.nome}: ${personagem.habilidade1.dano}\n
-            Dano de ${personagem.habilidade2.nome}: ${personagem.habilidade2.dano}\n`)
+/**
+ * Exibe o status atual do personagem na interface.
+ * @param {Personagem} personagem - O personagem cujo status será exibido.
+ */
+function mostrarStatus(personagem) {
+  mostrarTexto(`
+        --- **Seu Status:** ---
+        **Vida:** ${personagem.vida.toFixed(0)}
+        **Armadura:** ${personagem.armadura.toFixed(0)}
+        **Dinheiro:** ${personagem.dinheiro.toFixed(0)}
+        **Habilidade 1 (${
+          personagem.habilidade1.nome
+        }):** Dano ${personagem.habilidade1.dano.toFixed(
+    0
+  )} | Falha ${personagem.habilidade1.falha.toFixed(0)}%
+        **Habilidade 2 (${
+          personagem.habilidade2.nome
+        }):** Dano ${personagem.habilidade2.dano.toFixed(
+    0
+  )} | Falha ${personagem.habilidade2.falha.toFixed(0)}%
+    `);
 }
 
-export{ batalha, escolherHabilidadeFunc }
+export { batalha };
