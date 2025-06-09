@@ -11,8 +11,8 @@ function open_connection_and_create_db(callback) {
   const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'root'
-    // sem 'database'
+    password: '12345678',
+    database: 'test'
   });
 
   connection.connect(function(err) {
@@ -22,7 +22,7 @@ function open_connection_and_create_db(callback) {
     }
     console.log('Conectado ao MySQL. ID: ' + connection.threadId);
 
-    const sql_create_db = `CREATE DATABASE IF NOT EXISTS dbprojeto`;
+    const sql_create_db = `CREATE DATABASE IF NOT EXISTS test`;
 
     connection.query(sql_create_db, function(err) {
       if (err) {
@@ -30,15 +30,15 @@ function open_connection_and_create_db(callback) {
         return;
       }
 
-      console.log("Banco de dados 'dbprojeto' criado/verificado.");
+      console.log("Banco de dados 'test' criado/verificado.");
 
-      connection.changeUser({ database: 'dbprojeto' }, function(err) {
+      connection.changeUser({ database: 'test' }, function(err) {
         if (err) {
           console.error('Erro ao mudar para o banco: ' + err);
           return;
         }
 
-        console.log("Conectado ao banco 'dbprojeto'");
+        console.log("Conectado ao banco 'test'");
         callback(connection);
       });
     });
@@ -825,4 +825,6 @@ function inserir_personagem1_atirador(con, nome) {
    con.query(sql, callback_erro);
  }
 
- module.exports = { inserirDb, conexao, inserir_personagem1_atirador, inserir_personagem1_cabraPexte, inserir_personagem1_espiritualista, callback_erro, close };
+ module.exports = { inserirDb, inserir_personagem1_atirador, inserir_personagem1_cabraPexte, inserir_personagem1_espiritualista, callback_erro, close };
+
+ 

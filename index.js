@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-const Database = require('./database.js')
+const Database = require('./backend/database.js')
 
 const app = express() 
 const db = new Database()
