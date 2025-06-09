@@ -131,21 +131,21 @@ async function comecarJogo() {
 // Exponha a função globalmente para que possa ser chamada pelo HTML
 window.comecarJogo = comecarJogo;
 
-// Carregar os diálogos do backend antes de iniciar o jogo
-// Isso é feito uma única vez no carregamento da página
-fetch("/api/dialogos")
-  .then((res) => res.json())
-  .then((data) => {
-    setDialogos(data);
-    console.log("Diálogos carregados com sucesso!");
-    // O jogo só começa de fato quando o jogador clica em "Começar"
-  })
-  .catch((err) => {
-    console.error("Erro ao carregar os diálogos:", err);
-    mostrarTexto(
-      "Erro ao carregar diálogos do servidor. O jogo pode não funcionar corretamente."
-    );
-  });
+// // Carregar os diálogos do backend antes de iniciar o jogo
+// // Isso é feito uma única vez no carregamento da página
+// fetch("/api/dialogos")
+//   .then((res) => res.json())
+//   .then((data) => {
+//     setDialogos(data);
+//     console.log("Diálogos carregados com sucesso!");
+//     // O jogo só começa de fato quando o jogador clica em "Começar"
+//   })
+//   .catch((err) => {
+//     console.error("Erro ao carregar os diálogos:", err);
+//     mostrarTexto(
+//       "Erro ao carregar diálogos do servidor. O jogo pode não funcionar corretamente."
+//     );
+//   });
 
 export {
   mostrarTexto,
